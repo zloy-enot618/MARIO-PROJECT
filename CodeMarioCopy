@@ -1,0 +1,65 @@
+#pgzero
+WIDTH = 600 # Ширина окна
+HEIGHT = 300 # Высота окна
+TITLE = "MARIO" # Заголовок окна игры
+FPS = 30 # Количество кадров в секунду
+
+fon = Actor('fonoleg', size = (600,300))
+mario = Actor('m0', (50,210), size = (50,50))
+grib = Actor('44224272', (700, 210), size = (50,50))
+pyla = Actor('bill', (1000, 150), size =(60,60))
+game = Actor('gam', size =(600,300))
+konez = 0
+count = 0
+speed = 5
+def draw():
+    fon.draw()
+    mario.draw()
+    grib.draw()
+    pyla.draw()
+    if konez == 1:
+        game.draw()
+        screen.draw.text(count, pos = (300,300), color = "white", fontsize = 30)
+    screen.draw.text(count, pos = (10,10), color = "white", fontsize = 24)
+def update(dt):
+    global konez
+    global count
+    global speed 
+    if konez == 1 and keyboard.enter:
+        konez = 0
+        mario.pos = (50, 210)
+        grib.pos = (700, 210)
+        pyla.pos = (1000, 150)
+    #Перемещение гриба
+    if grib.x > -20:
+        grib.x = grib.x - speed
+    else:
+        grib.x = WIDTH + 20 
+        count +=1
+        speed += 1
+    #Перемещение пули
+    if pyla.x > -20:
+        pyla.x = pyla.x - speed
+    else:
+        pyla.x = WIDTH + 20
+        speed += 1
+    #Перемещение марио
+    if keyboard.left and mario.x > 20:
+        mario.image = "m1"
+        mario.x = mario.x - 5
+    elif keyboard.right and mario.x < 580:
+        mario.image = "m0"
+        mario.x = mario.x + 5
+    # Jump
+    if keyboard.up:
+        mario.image = "j1"
+        mario.y = 90
+        animate(mario, tween='bounce_end', duration=2, y=210)
+    elif keyboard.down:
+        mario.image = "j1"
+        mario.y = 210
+        animate(mario, duration=1, y = 210)
+    # Colliderect [NEW!!!] Финальное!!!
+    if mario.colliderect(grib) or mario.colliderect(pyla):
+        mario.image = "j1"
+        konez = 1
